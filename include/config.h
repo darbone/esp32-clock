@@ -13,35 +13,39 @@
 
 // ===== Hardware =====
 #define BUZZER_PIN      25
-#define BL_PIN          27   // backlight PWM
+#define BL_PIN          27
 #define BL_CHANNEL      0
-#define BAT_ADC_PIN     34   // baca voltase 18650 lewat voltage divider
+#define BAT_ADC_PIN     34
 
-// ===== Lokasi buat Open-Meteo =====
-// Salatiga, Jawa Tengah (ganti sesuai lokasi lo)
+// ===== Lokasi Open-Meteo (Salatiga) =====
 #define LATITUDE        "-7.3305"
 #define LONGITUDE       "110.4982"
 #define TIMEZONE        "Asia/Jakarta"
 
-// ===== Auto Sleep =====
-#define SLEEP_TIMEOUT_S 60    // detik sebelum sleep
-#define DIM_BEFORE_S    10    // detik sebelum sleep mulai dim
-
-// ===== Alarm default =====
-#define ALARM_DEFAULT_H 7
-#define ALARM_DEFAULT_M 0
-
 // ===== NTP =====
 #define NTP_SERVER      "pool.ntp.org"
-#define NTP_OFFSET      25200  // UTC+7 (WIB) = 7*3600
+#define NTP_OFFSET      25200   // UTC+7
 
-// ===== Colors (RGB565) =====
-#define C_BG            0x0821   // #060810
-#define C_TIME          0xEF3F   // #e0f0ff
-#define C_ACCENT        0x065F   // #00c8ff
-#define C_RED           0xF800   // #ff0000
-#define C_GREEN         0x07E0   // #00ff00
-#define C_YELLOW        0xFFE0   // #ffff00
-#define C_DIM           0x2945   // #2a4a6a
-#define C_WHITE         0xFFFF
-#define C_BLACK         0x0000
+// ===== Sleep =====
+#define SLEEP_TIMEOUT_S  60
+#define DIM_BEFORE_S     10
+
+// ===== Alarm =====
+#define ALARM_DEFAULT_H  7
+#define ALARM_DEFAULT_M  0
+
+// ===== LVGL display buffer =====
+// 1/10 layar: 320 * 24 pixels
+#define LV_BUF_SIZE     (320 * 24)
+
+// ===== Colors LVGL (lv_color_make) =====
+#define CLR_BG          lv_color_make(6,   8,  16)
+#define CLR_TIME        lv_color_make(221, 238, 255)
+#define CLR_ACCENT      lv_color_make(0,   200, 255)
+#define CLR_ACCENT2     lv_color_make(0,   170, 220)
+#define CLR_DIM         lv_color_make(42,  74,  106)
+#define CLR_RED         lv_color_make(255, 50,  50)
+#define CLR_GREEN       lv_color_make(0,   255, 136)
+#define CLR_YELLOW      lv_color_make(255, 214, 0)
+#define CLR_PANEL       lv_color_make(8,   12,  20)
+#define CLR_LINE        lv_color_make(13,  32,  48)

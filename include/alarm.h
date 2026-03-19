@@ -3,7 +3,6 @@
 #include <Preferences.h>
 #include "config.h"
 
-// Rename struct & variable → alarmCfg biar ga bentrok sama alarm() bawaan Arduino
 struct AlarmConfig {
   int  hour    = ALARM_DEFAULT_H;
   int  minute  = ALARM_DEFAULT_M;
@@ -14,13 +13,12 @@ struct AlarmConfig {
 };
 
 AlarmConfig alarmCfg;
-Preferences prefs;
+Preferences  prefs;
 
-// ===== Simpan/Load dari NVS =====
 void alarmSave() {
   prefs.begin("alarm", false);
-  prefs.putInt("h",   alarmCfg.hour);
-  prefs.putInt("m",   alarmCfg.minute);
+  prefs.putInt("h", alarmCfg.hour);
+  prefs.putInt("m", alarmCfg.minute);
   prefs.putBool("en", alarmCfg.enabled);
   prefs.end();
 }
@@ -33,13 +31,12 @@ void alarmLoad() {
   prefs.end();
 }
 
-// ===== Buzzer patterns =====
 void buzzTone(int pin, int freq, int dur) {
-  ledcSetup(1, freq, 8);
-  ledcAttachPin(pin, 1);
-  ledcWrite(1, 128);
+  ledcSetup(2, freq, 8);
+  ledcAttachPin(pin, 2);
+  ledcWrite(2, 128);
   delay(dur);
-  ledcWrite(1, 0);
+  ledcWrite(2, 0);
 }
 
 void playBeep(int pin) {
@@ -50,45 +47,16 @@ void playBeep(int pin) {
   }
 }
 
-void playMelody(int pin) {
-  int notes[][2] = {
-    {523,150},{659,150},{784,150},{1047,300},
-    {784,150},{523,150},{659,300},{0,200}
-  };
-  for (auto& n : notes) {
-    if (n[0] > 0) buzzTone(pin, n[0], n[1]);
-    else delay(n[1]);
-  }
-}
-
-void playSOS(int pin) {
-  for (int i = 0; i < 3; i++) { buzzTone(pin,1000,100); delay(100); }
-  delay(200);
-  for (int i = 0; i < 3; i++) { buzzTone(pin,1000,300); delay(100); }
-  delay(200);
-  for (int i = 0; i < 3; i++) { buzzTone(pin,1000,100); delay(100); }
-}
-
-// ===== Cek alarm setiap loop =====
-void checkAlarm(int pin, int curHour, int curMin, int buzzerMode = 0) {
-  if (!alarmCfg.enabled) return;
-
-  if (alarmCfg.snoozed && millis() > alarmCfg.snoozeUntil) {
+void checkAlarm(int pin, int h, int m) {
+  if (!alarmCfg.enabled || alarmCfg.snoozed) return;
+  if (alarmCfg.snoozed && millis() > alarmCfg.snoozeUntil)
     alarmCfg.snoozed = false;
-  }
-  if (alarmCfg.snoozed) return;
-
-  if (curHour == alarmCfg.hour && curMin == alarmCfg.minute) {
+  if (h == alarmCfg.hour && m == alarmCfg.minute)
     alarmCfg.ringing = true;
-    switch (buzzerMode) {
-      case 0: playBeep(pin);   break;
-      case 1: playMelody(pin); break;
-      case 2: playSOS(pin);    break;
-    }
-  }
+  if (alarmCfg.ringing) playBeep(pin);
 }
 
-void snoozeAlarm() {
+void snoozeAlarm()  {
   alarmCfg.ringing   = false;
   alarmCfg.snoozed   = true;
   alarmCfg.snoozeUntil = millis() + 5UL * 60000UL;
